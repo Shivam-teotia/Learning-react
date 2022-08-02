@@ -47,7 +47,7 @@ export default class CartItem extends Component {
     return (
       <div className="cart-item">
         <div className="left-block">
-            <img style={style.image} alt=""/>
+            <img style={style.image} src={product.img} alt=""/>
         </div>
         <div className="right-block">
             <div style={{fontSize:25,fontWeight:500}}>{title}</div>
