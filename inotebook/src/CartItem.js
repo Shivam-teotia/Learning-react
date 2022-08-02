@@ -11,7 +11,7 @@ export default class CartItem extends Component {
         }
     }*/
     //this.increaseQuantity=this.increaseQuantity.bind(this);
-    increaseQuantity=()=>{
+    //increaseQuantity=()=>{
         //console.log(this.state);
 
         //setState form 1 ---- use when we do not required prevState
@@ -24,7 +24,7 @@ export default class CartItem extends Component {
         //setState form 2 ---use when prevState is required
         //setState call is asynchronous
         
-        this.setState((prevState)=>{
+        /*this.setState((prevState)=>{
             return {
                 Qty:prevState.Qty+1
             }
@@ -38,10 +38,10 @@ export default class CartItem extends Component {
                 }
             }
         });
-    }
+    }*/
   render() {
     //const{price ,title ,Qty}=this.state;
-    console.log('this.props',this.props);
+    //console.log('this.props',this.props);
     const{price ,title ,Qty}=this.props.product;
     const{product, onIncreaseQuantity, onDecreaseQuantity, onDeleteProduct}=this.props;
     return (
