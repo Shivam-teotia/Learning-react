@@ -34,7 +34,9 @@ class App extends React.Component {
         }*/
         ],
         loading:true
-}};
+    }
+    this.db=firebase.firestore();
+};
 
 componentDidMount(){
   /*firebase
@@ -83,10 +85,21 @@ handleIncreaseQuantity=((product)=>{
     console.log('increase');
     const{products}=this.state;
     const index=products.indexOf(product);
-    products[index].Qty +=1;
+    /*products[index].Qty +=1;
     this.setState({
         products:products
-    })
+    })*/
+    const docRef=this.db.collection('products').doc(products[index].id);
+    docRef
+      .update({
+        Qty:products[index].Qty+1
+      })
+      .then(()=>{
+        console.log('updated sucesfully')
+      })
+      .catch((error)=>{
+        console.log('error in updating',error);
+      })
 })
 handleDecreaseQuantity=((product)=>{
     console.log('increase');
@@ -127,11 +140,28 @@ getCartTotal=()=>{
 
   return cartTotal;
 }
+addProduct=()=>{
+    this.db
+      .collection('products')
+      .add({
+        img:'',
+        price:9990,
+        Qty:15,
+        title:'Washing Machine'
+      })
+      .then((docRef)=>{
+          console.log('product has been added ', docRef);
+      })
+      .catch((error)=>{
+        console.log('Error :', error);
+      })
+}
   render(){
     const{ products,loading }=this.state;
     return (
       <div className="App">
           <Navbar count={this.cartCount()}/>
+          <button onClick={this.addProduct} style={{padding:20 ,fontSize:20 ,margin:5, borderRadius:10}}>Add a Product</button>
           <Cart 
             products={products}
             onIncreaseQuantity={this.handleIncreaseQuantity}
