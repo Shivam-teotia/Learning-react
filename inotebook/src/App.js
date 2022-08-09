@@ -1,12 +1,17 @@
+//import { initializeApp } from 'firebase/app';
 import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
+import * as firebase from  'firebase';
+//import 'firebase/firestore';
+//import {db} from './firebase-config';
+
 class App extends React.Component {
   constructor(){
     super() //used to called constructor of parent class
     this.state={
         products:[
-        {
+        /*{
             price:999,
             title:'My Phone',
             Qty:10,
@@ -26,9 +31,35 @@ class App extends React.Component {
             Qty:3,
             img:'https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGxhcHRvcHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60',
             id:3
-        }
-        ]
+        }*/
+        ],
+        loading:true
 }};
+
+componentDidMount(){
+  firebase
+    .firestore()
+    .collection('products')
+    .get()
+    .then((snapshot)=>{
+        console.log(snapshot);
+
+        snapshot.docs.map((doc)=>{
+          console.log(doc.data());
+        });
+
+        const products=snapshot.docs.map((doc)=>{
+          const data=doc.data();
+          data['id']=doc.id;
+          return data;
+        })
+
+        this.setState({
+          products:products,
+          loading:false
+        })
+    })
+}
 handleIncreaseQuantity=((product)=>{
     console.log('increase');
     const{products}=this.state;
@@ -78,7 +109,7 @@ getCartTotal=()=>{
   return cartTotal;
 }
   render(){
-    const{ products }=this.state;
+    const{ products,loading }=this.state;
     return (
       <div className="App">
           <Navbar count={this.cartCount()}/>
@@ -88,6 +119,7 @@ getCartTotal=()=>{
             onDecreaseQuantity={this.handleDecreaseQuantity}  
             onDeleteProduct={this.handleDeleteProduct}
           />
+          {loading && <h1>loading products.....</h1>}
           <div style={{padding:'20px', fontSize:'20px' ,fontWeight:'600'}}>TOTAL: {this.getCartTotal()} </div>
       </div>
     );
