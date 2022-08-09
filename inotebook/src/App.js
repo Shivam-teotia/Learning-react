@@ -64,6 +64,9 @@ componentDidMount(){
     firebase
       .firestore()
       .collection('products')
+      //.where('price','>=',1999)       //return products with price greater than or equal to 1999
+      //.where('title','===','Watch')   //return products whose title is exactly is equal to Watch
+      .orderBy('price','desc')          //return products in descending order of price if we use asc then it will return in incresing order of price
       .onSnapshot((snapshot)=>{
         console.log(snapshot);
         snapshot.docs.map((doc)=>{
@@ -105,18 +108,40 @@ handleDecreaseQuantity=((product)=>{
     console.log('increase');
     const{products}=this.state;
     const index=products.indexOf(product);
-    if(products[index].Qty>0){
+    /*if(products[index].Qty>0){
         products[index].Qty -=1;
     }
     this.setState({
         products:products
-    })
+    })*/
+
+    if(products[index].Qty>0){
+      const docRef=this.db.collection('products').doc(products[index].id);
+    docRef
+      .update({
+        Qty:products[index].Qty-1
+      })
+      .then(()=>{
+        console.log('updated sucesfully')
+      })
+      .catch((error)=>{
+        console.log('error in updating',error);
+      })
+    }
 })
 handleDeleteProduct=((id)=>{
     const {products}=this.state;
     const items=products.filter((items)=>items.id!==id);
     this.setState({
         products:items
+    })
+    const docRef=this.db.collection('products').doc(id);
+    docRef.delete()
+    .then(()=>{
+      console.log('deleted successfully');
+    })
+    .catch((error)=>{
+      console.log('Error',error);
     })
 })
 cartCount=()=> {
